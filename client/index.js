@@ -9,7 +9,7 @@ const observer = new MutationObserver(mutations => {
     Array.from(mutation.addedNodes)
       .forEach(node => {
         console.log(node);
-        console.log(node.matches && node.matches(items._selectors[0]));
+        console.log(node.matches && node.matches(items.selectors[0]));
       });
   });
 });
