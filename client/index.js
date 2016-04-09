@@ -1,26 +1,46 @@
 import bulker from 'bulker';
 
-const create = document.createElement.bind(document);
-const list = document.querySelector('ul');
-const items = bulker('li');
-
 const observer = new MutationObserver(mutations => {
   mutations.forEach(mutation => {
     Array.from(mutation.addedNodes)
       .forEach(node => {
-        console.log(node);
-        console.log(node.matches && node.matches(items.selectors[0]));
+        // console.log(node);
+        // console.log(node.matches && node.matches(items.selectors[0]));
       });
   });
 });
-
-console.log('items', items);
 
 observer.observe(document.body, {
   childList: true,
   subtree: true,
 });
 
-list.appendChild(create('li'));
-list.appendChild(create('li'));
-list.appendChild(create('li'));
+function createTodo(title) {
+  const list = document.querySelector('.todos');
+  const todo = document.createElement('li');
+  todo.textContent = title;
+  todo.classList.add('todo');
+
+  list.appendChild(todo);
+}
+
+const todos = bulker('.todo');
+const form = bulker('form');
+
+todos.call('addEventListener', 'click', event => {
+  event.target.parentNode.removeChild(event.target);
+});
+
+form.call('addEventListener', 'submit', event => {
+  const form = event.target;
+
+  event.preventDefault();
+  createTodo(form.title.value);
+
+  form.reset();
+});
+
+
+// list.appendChild(create('li'));
+// list.appendChild(create('li'));
+// list.appendChild(create('li'));
