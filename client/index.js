@@ -1,46 +1,53 @@
 import bulker from 'bulker';
 
-const observer = new MutationObserver(mutations => {
-  mutations.forEach(mutation => {
-    Array.from(mutation.addedNodes)
-      .forEach(node => {
-        // console.log(node);
-        // console.log(node.matches && node.matches(items.selectors[0]));
-      });
-  });
-});
-
-observer.observe(document.body, {
-  childList: true,
-  subtree: true,
-});
-
-function createTodo(title) {
+/**
+ * Adds new todo element with provideed title
+ * and a done button.
+ */
+function addTodo(title) {
   const list = document.querySelector('.todos');
-  const todo = document.createElement('li');
-  todo.textContent = title;
-  todo.classList.add('todo');
 
-  list.appendChild(todo);
+  const todoElement = document.createElement('li');
+  const titleElement = document.createElement('span');
+  const doneButtonElement = document.createElement('button');
+
+  titleElement.textContent = title;
+  doneButtonElement.textContent = 'done';
+  todoElement.classList.add('todo');
+
+  todoElement.appendChild(titleElement);
+  todoElement.appendChild(doneButtonElement);
+  list.appendChild(todoElement);
 }
 
+/**
+ * Removes a todo from DOM.
+ */
+function removeTodo(todo) {
+  todo.parentNode.removeChild(todo);
+}
+
+// query todo elements
 const todos = bulker('.todo');
+
+// add click listener on all todos (both present and future-added)
+todos.call('addEventListener', 'click', event => {
+  // if click is on a done button, remove todo
+  if (event.target.matches('button')) {
+    removeTodo(event.target.parentNode);
+  }
+});
+
+// query form element
 const form = bulker('form');
 
-todos.call('addEventListener', 'click', event => {
-  event.target.parentNode.removeChild(event.target);
-});
-
+// submit new todo
 form.call('addEventListener', 'submit', event => {
-  const form = event.target;
-
   event.preventDefault();
-  createTodo(form.title.value);
 
-  form.reset();
+  const formElement = event.target;
+
+  addTodo(formElement.title.value);
+
+  formElement.reset();
 });
-
-
-// list.appendChild(create('li'));
-// list.appendChild(create('li'));
-// list.appendChild(create('li'));
